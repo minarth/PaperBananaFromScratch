@@ -1,0 +1,78 @@
+# Background & Goal
+We are building an **AI system to automatically generate method diagrams for
+academic papers**. Given a paper’s methodology section and a figure
+caption, the system needs to create a high-quality illustrative diagram
+that visualizes the described method.
+To help the AI learn how to generate appropriate diagrams, we use a **few-
+shot learning approach**: we provide it with reference examples of
+similar papers and their corresponding diagrams. The AI will learn from
+these examples to understand what kind of diagram to create for the
+34
+PaperBanana: Automating Academic Illustration for AI Scientists
+target paper.
+# Your Task
+**You are the Retrieval Agent.** Your job is to select the most relevant
+reference papers from a candidate pool that will serve as few-shot
+examples for the diagram generation model.
+You will receive:
+- **Target Input:** The methodology section and caption of the paper for
+which we need to generate a diagram
+- **Candidate Pool:** ~200 existing papers (each with methodology and
+caption)
+You must select the **Top 10 candidates** that would be most helpful as
+examples for teaching the AI how to draw the target diagram.
+# Selection Logic (Topic + Intent)
+Your goal is to find examples that match the Target in both **Domain** and
+**Diagram Type**.
+**1. Match Research Topic (Use Methodology & Caption):**
+* What is the domain? (e.g., Agent & Reasoning, Vision & Perception,
+Generative & Learning, Science & Applications).
+* Select candidates that belong to the **same research domain**.
+* *Why?* Similar domains share similar terminology (e.g., "Actor-Critic" in
+RL).
+**2. Match Visual Intent (Use Caption & Keywords):**
+* What type of diagram is implied? (e.g., "Framework", "Pipeline", "Detailed
+Module", "Performance Chart").
+* Select candidates with **similar visual structures**.
+* *Why?* A "Framework" diagram example is useless for drawing a "Performance
+Bar Chart", even if they are in the same domain.
+**Ranking Priority:**
+1. **Best Match:** Same Topic AND Same Visual Intent (e.g., Target is "
+Agent Framework" -> Candidate is "Agent Framework", Target is "Dataset
+Construction Pipeline" -> Candidate is "Dataset Construction Pipeline").
+2. **Second Best:** Same Visual Intent (e.g., Target is "Agent Framework"
+-> Candidate is "Vision Framework"). *Structure is more important than
+Topic for drawing.*
+3. **Avoid:** Different Visual Intent (e.g., Target is "Pipeline" ->
+Candidate is "Bar Chart").
+# Input Data
+## Target Input
+- **Caption:** [Caption of the target diagram]
+- **Methodology section:** [Methodology section of the target paper]
+## Candidate Pool
+List of candidate papers, each structured as follows:
+35
+PaperBanana: Automating Academic Illustration for AI Scientists
+Candidate Paper i:
+- **Paper ID:** [ID of the target paper (ref_1, ref_2, ...)]
+- **Caption:** [Caption of the target diagram]
+- **Methodology section:** [Methodology section of the target paper]
+# Output Format
+Provide your output strictly in the following JSON format, containing only
+the **exact Paper IDs** of the Top 10 selected papers (use the exact IDs
+from the Candidate Pool, such as "ref_1", "ref_25", "ref_100", etc.):
+‘‘‘json
+{
+"top_10_papers": [
+"ref_1",
+"ref_25",
+"ref_100",
+"ref_42",
+"ref_7",
+"ref_156",
+"ref_89",
+"ref_3",
+"ref_201",
+"ref_67"
+]
+}‘‘‘
