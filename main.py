@@ -39,6 +39,7 @@ retrieval_agent = Agent[None, ReferenceExamples](
 
 async def retrieve_examples(usage: RunUsage, ctx: PaperInput):
     # TODO outsource loading of examples
+    # I will probably need to skip this step because they didn't released their dataset
     
     template = f"""Target Input:
     Caption: {ctx.caption}
@@ -66,5 +67,5 @@ def gather_input() -> PaperInput:
 
 if __name__ == "__main__":
     #asyncio.run(main())
-    
+    run_input = gather_input()
     
